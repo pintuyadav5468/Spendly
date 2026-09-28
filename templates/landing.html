@@ -8,6 +8,18 @@
 
 {% block content %}
 
+<div class="video-modal" id="videoModal" aria-hidden="true">
+    <div class="video-modal-backdrop" data-modal-close></div>
+    <div class="video-modal-dialog" role="dialog" aria-modal="true" aria-label="How Spendly works">
+        <button type="button" class="video-modal-close" data-modal-close aria-label="Close video">&times;</button>
+        <div class="video-modal-frame">
+            <iframe id="videoModalIframe" src="" title="How Spendly works"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
 <section class="hero-new">
     <div class="hero-new-inner">
         <div class="hero-new-badge">
@@ -24,7 +36,7 @@
         </p>
         <div class="hero-new-actions">
             <a href="{{ url_for('register') }}" class="hero-new-btn">Create free account</a>
-            <a href="#" class="hero-new-btn">See how it works</a>
+            <a href="#" class="hero-new-btn" id="howItWorksBtn">See how it works</a>
         </div>
 
         <div class="hero-new-dashboard">
@@ -104,4 +116,42 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var VIDEO_ID = "jNQXAC9IVRw"; // placeholder video — replace with the real one later
+        var trigger = document.getElementById("howItWorksBtn");
+        var modal = document.getElementById("videoModal");
+        var iframe = document.getElementById("videoModalIframe");
+
+        function openModal(event) {
+            event.preventDefault();
+            iframe.src = "https://www.youtube.com/embed/" + VIDEO_ID + "?autoplay=1&rel=0";
+            modal.classList.add("is-open");
+            modal.setAttribute("aria-hidden", "false");
+            document.body.classList.add("video-modal-open");
+        }
+
+        function closeModal() {
+            modal.classList.remove("is-open");
+            modal.setAttribute("aria-hidden", "true");
+            iframe.src = ""; // stops playback
+            document.body.classList.remove("video-modal-open");
+        }
+
+        trigger.addEventListener("click", openModal);
+
+        Array.prototype.forEach.call(modal.querySelectorAll("[data-modal-close]"), function (el) {
+            el.addEventListener("click", closeModal);
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && modal.classList.contains("is-open")) {
+                closeModal();
+            }
+        });
+    })();
+</script>
 {% endblock %}
